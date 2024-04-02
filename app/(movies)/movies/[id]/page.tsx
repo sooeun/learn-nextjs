@@ -1,10 +1,20 @@
 import { Suspense } from "react";
-import MovieInfo from "../../../../components/movie-info";
+import MovieInfo, { getMovie } from "../../../../components/movie-info";
 import MovieVideos from "../../../../components/movie-videos";
 
-export const metadata = {
-    title: "MovieDetail",
-};
+// export const metadata = {
+//     title: "Home",
+// };
+
+interface IParams {
+    params: { id: string };
+}
+export async function generateMetadata({ params: { id } }: IParams) {
+    const movie = await getMovie(id);
+    return {
+        title: movie.title,
+    };
+}
 
 // async function getMovie(id: string) {
 //     await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -18,7 +28,7 @@ export const metadata = {
 //     return response.json();
 // }
 
-export default async function MovieDetail({ params: { id } }: { params: { id: string } }) {
+export default async function MovieDetail({ params: { id } }: IParams) {
     // 순차적 fetch -> 시간이 오래 걸림.
     // const movie = await getMovie(id);
     // const videos = await getVideos(id);
@@ -32,7 +42,6 @@ export default async function MovieDetail({ params: { id } }: { params: { id: st
 
     return (
         <div>
-            <h3>Movie detail page</h3>
             <Suspense fallback={<h1>Loading movie info</h1>}>
                 <MovieInfo id={id} />
             </Suspense>
